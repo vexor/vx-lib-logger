@@ -77,12 +77,18 @@ module Vx ; module Lib ; module Logger
         end
 
         body = {
-          message:    message,
+          message:    message.to_s,
           thread_id:  ::Thread.current.object_id,
           process_id: ::Process.pid,
           progname:   (params[:progname] || :ruby),
           level:      level,
-        }.merge(options)
+        }
+
+        if options && options != {}
+          body.merge!(
+            fields: options
+          )
+        end
 
         @logger.public_send level, body
       end
