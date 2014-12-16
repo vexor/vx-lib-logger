@@ -17,6 +17,10 @@ module Vx ; module Lib ; module Logger
       define_method m do |*args|
         process_message(m, *args)
       end
+
+      define_method :"#{m}?" do
+        @logger.public_send :"#{m}?"
+      end
     end
 
     def level
