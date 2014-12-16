@@ -15,7 +15,7 @@ module Vx ; module Lib
       Instance.new(io, options)
     end
 
-    def default
+    def self.default
       @@default
     end
 
