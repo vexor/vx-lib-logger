@@ -6,12 +6,15 @@ module Vx ; module Lib
 
     autoload :Instance,         File.expand_path("../logger/instance",          __FILE__)
     autoload :JsonFormatter,    File.expand_path("../logger/json_formatter",    __FILE__)
-    autoload :Instrumentations, File.expand_path("../logger/instrumentations",  __FILE__)
-    autoload :HandleExceptions, File.expand_path("../logger/handle_exceptions", __FILE__)
+    autoload :RawFormatter,     File.expand_path("../logger/raw_formatter",     __FILE__)
+
+    module Rack
+      autoload :HandleExceptions, File.expand_path("../logger/rack/handle_exceptions", __FILE__)
+    end
 
     @@default = Instance.new(STDOUT)
 
-    def self.get(io, options)
+    def self.get(io = nil, options = {})
       Instance.new(io, options)
     end
 

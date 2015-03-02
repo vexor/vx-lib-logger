@@ -10,10 +10,10 @@ module Vx ; module Lib ; module Logger
     def initialize(io, params = {})
       @params           = params
       @logger           = ::Logger.new(io, 7, 50_000_000)
-      @logger.formatter = get_formatter(params[:format])
+      @logger.formatter = RawFormatter.new
     end
 
-    [:fatal, :warn, :debug, :error, :info, :notice].each do |m|
+    [:fatal, :warn, :debug, :error, :info].each do |m|
       define_method m do |*args|
         process_message(m, *args)
       end
@@ -81,11 +81,8 @@ module Vx ; module Lib ; module Logger
         end
 
         body = {
-          message:    message.to_s,
           thread_id:  ::Thread.current.object_id,
           process_id: ::Process.pid,
-          progname:   (params[:progname] || :ruby),
-          level:      level,
         }
 
         if options && options != {}
@@ -94,7 +91,11 @@ module Vx ; module Lib ; module Logger
           )
         end
 
-        @logger.public_send level, body
+        @logger.public_send level, format_message(message, body)
+      end
+
+      def format_message(message, payload)
+        JsonFormatter.call(message, payload)
       end
 
   end
