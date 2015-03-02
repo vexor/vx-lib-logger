@@ -15,7 +15,7 @@ module Vx ; module Lib
     @@default = Instance.new(STDOUT)
 
     def self.get(io = nil, options = {})
-      Instance.new(io, options)
+      Instance.new(io || STDOUT, options)
     end
 
     def self.default

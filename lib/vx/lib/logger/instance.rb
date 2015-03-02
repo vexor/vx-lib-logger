@@ -35,15 +35,6 @@ module Vx ; module Lib ; module Logger
       params[:progname] = new_val
     end
 
-    def get_formatter(name)
-      case name
-      when :json
-        JsonFormatter.new
-      else
-        JsonFormatter.new
-      end
-    end
-
     def handle(message, options = {})
       be = Time.now.to_f
       re = nil
