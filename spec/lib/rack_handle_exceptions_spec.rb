@@ -13,7 +13,7 @@ describe Vx::Lib::Logger::Rack::HandleExceptions do
     app    = ->(env) { raise 'got!' }
     handle = Vx::Lib::Logger::Rack::HandleExceptions.new(app)
     re = handle.call({})
-    assert_equal re, 'env'
+    assert_nil re
   end
 
 end
