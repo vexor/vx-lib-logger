@@ -2,11 +2,11 @@ require 'oj'
 
 module Vx ; module Lib ; module Logger
 
-  module JsonFormatter
+  module StdoutFormatter
 
-    def self.call(message, payload)
+    def self.call(level, message, payload)
       payload = ::Oj.dump(payload, mode: :compat)
-      "#{message} :--: #{payload}"
+      "[#{level}] #{message} :--: #{payload}\n"
     end
 
   end
