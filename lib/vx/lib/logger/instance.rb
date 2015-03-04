@@ -46,6 +46,7 @@ module Vx ; module Lib ; module Logger
 
     def level=(new_val)
       @logger.level = new_val
+      @logstash_logger.level = new_val
     end
 
     def progname=(new_val)
