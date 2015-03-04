@@ -53,6 +53,9 @@ module Vx ; module Lib ; module Logger
       @progname = new_val
     end
 
+    def formatter ; nil ; end
+    def formatter=(val) ; nil ; end
+
     def handle(message, options = {})
       be = Time.now.to_f
       re = nil
@@ -80,6 +83,10 @@ module Vx ; module Lib ; module Logger
     private
 
       def process_message(level, message, options = {})
+
+        if level.to_s == 'fatal'
+          puts caller.inspect
+        end
 
         if options[:exception] && options[:exception].is_a?(Exception)
           ex = options.delete(:exception)

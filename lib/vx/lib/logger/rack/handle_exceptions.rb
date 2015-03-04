@@ -8,15 +8,16 @@ module Vx ; module Lib ; module Logger
       }
 
       def clean_env(env)
-        env = env.select{|k,v| k !~ /^(action_dispatch|puma|session|rack\.session|action_controller)/ }
-        env['HTTP_COOKIE'] &&= env['HTTP_COOKIE'].scan(/.{80}/).join("\n")
+        env = env.select do |k,v|
+          k !~ /^(action_dispatch|puma|session|rack\.session|action_controller|HTTP_COOKIE|ROUTES_[0-9]+_SCRIPT_NAME)/
+        end
         env
       end
 
       def notify(exception, env)
         unless ignore?(exception)
-          Lib::Logger.default.error(
-            "Unhandled exception",
+          Lib::Logger.default.fatal(
+            "Unhandled exception: #{exception.class} - #{exception.message}",
             clean_env(env).merge(exception: exception)
           )
         end

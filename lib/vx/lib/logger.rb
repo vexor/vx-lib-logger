@@ -25,5 +25,15 @@ module Vx ; module Lib
       @@default
     end
 
+    def self.install_handle_exceptions_middleware
+      if defined? Rails
+        ::Rails.application.config.middleware.insert 0, Vx::Lib::Logger::Rack::HandleExceptions
+
+        if ::Rails.env.production?
+          ::Rails.application.config.middleware.delete ::ActionDispatch::DebugExceptions
+        end
+      end
+    end
+
   end
 end ; end
