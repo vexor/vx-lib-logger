@@ -13,7 +13,7 @@ module Vx ; module Lib ; module Logger
     end
 
     def progname=(val)
-      Lib::Logger.progname = val
+      # disable
     end
 
     def level
