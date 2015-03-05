@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Vx::Lib::Logger::Logstash do
+describe Vx::Lib::Logger::LogstashDevice do
 
   before do
     ENV['LOGSTASH_HOST'] = 'localhost:9999'
@@ -12,7 +12,7 @@ describe Vx::Lib::Logger::Logstash do
 
   it "should successfuly connect" do
     re = with_socket do
-      log = Vx::Lib::Logger::Logstash.new
+      log = Vx::Lib::Logger::LogstashDevice.new
       log.write("Hello\n")
       log.close
     end
@@ -20,7 +20,7 @@ describe Vx::Lib::Logger::Logstash do
   end
 
   it "should successfuly lost connection" do
-    log = Vx::Lib::Logger::Logstash.new
+    log = Vx::Lib::Logger::LogstashDevice.new
 
     re = with_socket do
       log.write("Hello\n")

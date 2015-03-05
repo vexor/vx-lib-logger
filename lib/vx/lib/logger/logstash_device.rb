@@ -4,7 +4,7 @@ require 'thread'
 
 module Vx ; module Lib ; module Logger
 
-  class Logstash
+  class LogstashDevice
 
     def initialize
       @mutex = Mutex.new
@@ -58,7 +58,7 @@ module Vx ; module Lib ; module Logger
       end
 
       def warn(msg)
-        $stderr.puts msg
+        $stderr.puts "[warn ] #{msg}"
       end
 
       def with_connection(&block)
@@ -77,7 +77,6 @@ module Vx ; module Lib ; module Logger
 
       def connect
         @io = TCPSocket.new(host, port).tap do |socket|
-          warn "#{self.class} - connect to #{uri.to_s}"
           socket.sync = true
         end
       end

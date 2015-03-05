@@ -2,7 +2,7 @@ require 'oj'
 
 module Vx ; module Lib ; module Logger
 
-  module JournalFormatter
+  module LogstashFormatter
 
     @@exe   = $PROGRAM_NAME
     @@gid   = ::Process.gid
