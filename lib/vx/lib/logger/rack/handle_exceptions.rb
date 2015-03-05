@@ -16,7 +16,7 @@ module Vx ; module Lib ; module Logger
 
       def notify(exception, env)
         unless ignore?(exception)
-          Lib::Logger.default.fatal(
+          Lib::Logger.get.fatal(
             "Unhandled exception: #{exception.class} - #{exception.message}",
             clean_env(env).merge(exception: exception)
           )
