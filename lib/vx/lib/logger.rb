@@ -31,12 +31,12 @@ module Vx ; module Lib
       @@logstash_device ||= LogstashDevice.new
     end
 
-    def self.get
+    def self.get(target = nil)
       @@default ||= begin
         if logstash_device.enabled?
           LogstashLogger.new
         else
-          StdoutLogger.new(STDOUT)
+          StdoutLogger.new(target || STDOUT)
         end
       end
     end
