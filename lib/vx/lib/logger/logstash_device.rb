@@ -26,25 +26,29 @@ module Vx ; module Lib ; module Logger
     end
 
     def close
-      @io && @io.close
-    rescue Exception => e
-      warn "#{self.class} - #{e.class} - #{e.message}"
-    ensure
-      @io = nil
+      @mutex.synchronize do
+        begin
+          @io && @io.close
+        rescue Exception => e
+          warn "#{self.class} - #{e.class} - #{e.message}"
+        ensure
+          @io = nil
+        end
+      end
     end
 
     def write(message)
       if enabled?
-        @mutex.synchronize do
-          with_connection do
-            @io.write message
-          end
+        with_connection do
+          @io.write message
         end
       end
     end
 
     def flush
-      @io && @io.flush
+      @mutex.synchronize do
+        @io && @io.flush
+      end
     end
 
     private
@@ -62,12 +66,13 @@ module Vx ; module Lib ; module Logger
       end
 
       def with_connection(&block)
-        connect unless connected?
+        @mutex.synchronize do
+          connect unless connected?
+        end
         yield
       rescue Exception => e
         warn "#{self.class} - #{e.class} - #{e.message}"
         close
-        @io = nil
       end
 
       def reconnect
