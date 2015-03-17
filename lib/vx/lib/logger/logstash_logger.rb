@@ -20,11 +20,11 @@ module Vx ; module Lib ; module Logger
       logstash_device.close
     end
 
-    private
+    def logstash_device
+      Lib::Logger.logstash_device
+    end
 
-      def logstash_device
-        Lib::Logger.logstash_device
-      end
+    private
 
       def format_message(level, message, payload)
         LogstashFormatter.call(level, progname, message, payload)

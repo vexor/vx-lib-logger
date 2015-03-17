@@ -2,25 +2,32 @@ require File.expand_path("../../lib/vx/lib/logger", __FILE__)
 
 require 'minitest/spec'
 require 'minitest/autorun'
+require 'thread'
 
 def with_socket
-  out  = ""
+  out    = ""
   server = TCPServer.new 9999
+  lock   = Mutex.new
 
-  th = Thread.new do
-    loop do
-      client = server.accept
-      out << client.gets
-      client.close
+  ths = (0..10).to_a.map do |n|
+    Thread.new do
+      loop do
+        client = server.accept
+        lock.synchronize do
+          out << client.gets
+          puts "#{n}: !!!#{out}!!!"
+          client.close
+        end
+      end
     end
   end
 
   begin
     yield
-    sleep 0.2
+    sleep 10
     out
   ensure
-    th.kill
+    ths.map(&:kill)
     server.close
   end
 end
