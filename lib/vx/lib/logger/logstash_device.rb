@@ -8,13 +8,15 @@ module Vx ; module Lib ; module Logger
 
     def initialize
       @mutex = Mutex.new
+      @queue = Queue.new
     end
 
     def uri
-      @uri ||= begin
-        h = ENV['LOGSTASH_HOST']
-        URI("logstash://#{h}") if h
-      end
+      @uri ||=
+        begin
+          h = ENV['LOGSTASH_HOST']
+          URI("logstash://#{h}") if h
+        end
     end
 
     def enabled?
@@ -39,9 +41,8 @@ module Vx ; module Lib ; module Logger
 
     def write(message)
       if enabled?
-        with_connection do
-          @io.write message
-        end
+        logger_thread
+        @queue.push message
       end
     end
 
@@ -51,40 +52,50 @@ module Vx ; module Lib ; module Logger
       end
     end
 
+    def wait
+      while !@queue.empty?
+        sleep 0.1
+      end
+    end
+
+    def logger_thread
+      @logger_loop ||= Thread.new do
+        loop do
+          m = @queue.pop
+          with_connection do
+            @io.write m
+          end
+        end
+      end
+    end
+
     private
 
-      def host
-        uri.host
-      end
+    def host
+      uri.host
+    end
 
-      def port
-        @port ||= uri.port || 514
-      end
+    def port
+      @port ||= uri.port || 514
+    end
 
-      def warn(msg)
-        $stderr.puts "[warn ] #{msg}"
-      end
+    def warn(msg)
+      $stderr.puts "[warn ] #{msg}"
+    end
 
-      def with_connection(&block)
-        @mutex.synchronize do
-          connect unless connected?
-        end
-        yield
-      rescue Exception => e
-        warn "#{self.class} - #{e.class} - #{e.message}"
-        close
-      end
+    def with_connection(&block)
+      connect unless connected?
+      yield
+    rescue Exception => e
+      warn "#{self.class} - #{e.class} - #{e.message}"
+      close
+    end
 
-      def reconnect
-        @io = nil
-        connect
+    def connect
+      @io = TCPSocket.new(host, port).tap do |socket|
+        socket.sync = true
       end
-
-      def connect
-        @io = TCPSocket.new(host, port).tap do |socket|
-          socket.sync = true
-        end
-      end
+    end
 
   end
 

@@ -17,6 +17,7 @@ describe Vx::Lib::Logger::LogstashLogger do
     it "should write #{m} message" do
       re = with_socket do
         @log.public_send(m, "send #{m}")
+        @log.wait
         @log.close
       end
       assert_match(/send #{m}/, re)
@@ -26,6 +27,7 @@ describe Vx::Lib::Logger::LogstashLogger do
   it "should write message with params" do
     re = with_socket do
       @log.info "text message", param: :value
+      @log.wait
       @log.close
     end
     assert_match(/text message/, re)
@@ -36,6 +38,7 @@ describe Vx::Lib::Logger::LogstashLogger do
   it "should write message with exception in params" do
     re = with_socket do
       @log.info "text message", exception: Exception.new("got!")
+      @log.wait
       @log.close
     end
     assert_match(/text message/, re)
@@ -46,6 +49,7 @@ describe Vx::Lib::Logger::LogstashLogger do
   it "should dump invalid unicode key" do
     re = with_socket do
       @log.info "Le Caf\xc3\xa9 \xa9", key: "Le Caf\xc3\xa9 \xa9"
+      @log.wait
       @log.close
     end
     assert_match(/Le Caf/, re)

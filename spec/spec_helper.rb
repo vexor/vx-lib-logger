@@ -2,6 +2,11 @@ require File.expand_path("../../lib/vx/lib/logger", __FILE__)
 
 require 'minitest/spec'
 require 'minitest/autorun'
+require 'timeout'
+
+def with_timeout(tm=3)
+  Timeout.timeout(tm) { yield }
+end
 
 def with_socket
   out  = ""
@@ -9,9 +14,10 @@ def with_socket
 
   th = Thread.new do
     loop do
-      client = server.accept
-      out << client.gets
-      client.close
+      Thread.fork(server.accept) do |client|
+        out << client.gets
+        client.close
+      end
     end
   end
 
