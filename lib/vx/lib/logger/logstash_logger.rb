@@ -20,6 +20,10 @@ module Vx ; module Lib ; module Logger
       logstash_device.close
     end
 
+    def wait
+      logstash_device.wait
+    end
+
     private
 
       def logstash_device

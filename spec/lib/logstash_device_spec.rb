@@ -16,7 +16,7 @@ describe Vx::Lib::Logger::LogstashDevice do
       log.write("Hello\n")
       log.close
     end
-    assert_equal re, "Hello\n"
+    assert_equal "Hello\n", re
   end
 
   it "should successfuly lost connection" do
@@ -24,18 +24,20 @@ describe Vx::Lib::Logger::LogstashDevice do
 
     re = with_socket do
       log.write("Hello\n")
-      log.close
+      with_timeout { log.wait }
     end
+    log.close
 
     log.write("Lost\n")
+    with_timeout { log.wait }
 
     re << with_socket do
       log.write("World\n")
+      with_timeout { log.wait }
     end
-
     log.close
 
-    assert_equal re, "Hello\nWorld\n"
+    assert_equal "Hello\nWorld\n", re
   end
 
 
