@@ -19,7 +19,6 @@ describe Vx::Lib::Logger::LogstashLogger do
         @log.public_send(m, "send #{m}")
         @log.close
       end
-      @log.logstash_device.close_main_thread
       assert_match(/send #{m}/, re)
     end
   end

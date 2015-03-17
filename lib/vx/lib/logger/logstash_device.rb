@@ -8,7 +8,6 @@ module Vx ; module Lib ; module Logger
 
     def initialize
       @mutex = Mutex.new
-      @queue = Queue.new
     end
 
     def uri
@@ -36,34 +35,16 @@ module Vx ; module Lib ; module Logger
 
     def write(message)
       if enabled?
-        main_thread
-        @queue.push message
-      end
-    end
-
-    def flush
-      @io && @io.flush
-    end
-
-    def main_thread
-      @main_thread ||= Thread.new do
-        loop do
+        @mutex.synchronize do
           with_connection do
-            @io.write @queue.pop
+            @io.write message
           end
         end
       end
     end
 
-    def close_main_thread
-      @main_thread && (
-        @main_thread.kill
-        @main_thread = nil
-      )
-    end
-
-    def empty?
-      @queue.empty?
+    def flush
+      @io && @io.flush
     end
 
     private
@@ -81,16 +62,12 @@ module Vx ; module Lib ; module Logger
       end
 
       def with_connection(&block)
-        begin
-          if enabled?
-            connect unless connected?
-            yield
-          end
-        rescue Exception => e
-          warn "#{self.class} - #{e.class} - #{e.message}"
-          close
-          @io = nil
-        end
+        connect unless connected?
+        yield
+      rescue Exception => e
+        warn "#{self.class} - #{e.class} - #{e.message}"
+        close
+        @io = nil
       end
 
       def reconnect
