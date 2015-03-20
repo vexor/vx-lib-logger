@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Vx::Lib::Logger::LogstashDevice do
 
   before do
-    ENV['LOGSTASH_HOST'] = 'localhost:9999'
+    ENV['LOGSTASH_HOST'] = 'localhost:19999'
   end
 
   after do
@@ -16,7 +16,7 @@ describe Vx::Lib::Logger::LogstashDevice do
       log.write("Hello\n")
       log.close
     end
-    assert_equal "Hello\n", re
+    assert_match(/^Hello\n/, re)
   end
 
   it "should successfuly lost connection" do

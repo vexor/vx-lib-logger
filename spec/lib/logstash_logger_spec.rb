@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Vx::Lib::Logger::LogstashLogger do
 
   before do
-    ENV['LOGSTASH_HOST'] = 'localhost:9999'
+    ENV['LOGSTASH_HOST'] = 'localhost:19999'
 
     @log = Vx::Lib::Logger::LogstashLogger.new
     assert @log

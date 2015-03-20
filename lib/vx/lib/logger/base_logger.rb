@@ -25,8 +25,8 @@ module Vx ; module Lib ; module Logger
     end
 
     [:fatal, :warn, :debug, :error, :info].each do |m|
-      define_method m do |*args|
-        process_message(m, *args)
+      define_method m do |*args, &block|
+        process_message(m, *args, &block)
       end
 
       define_method :"#{m}?" do
@@ -60,7 +60,10 @@ module Vx ; module Lib ; module Logger
 
     private
 
-      def process_message(level, message, fields = {})
+      def process_message(level, message = nil, fields = {})
+        if block_given?
+          message = yield
+        end
 
         if fields[:exception] && fields[:exception].is_a?(Exception)
           ex = fields.delete(:exception)
@@ -86,7 +89,7 @@ module Vx ; module Lib ; module Logger
           )
         end
 
-        @logger.public_send level, format_message(level, message, payload)
+        @logger.public_send level, format_message(level, message.to_s, payload)
       end
 
       def sanitize_hash(payload)

@@ -10,7 +10,7 @@ end
 
 def with_socket
   out  = ""
-  server = TCPServer.new 9999
+  server = TCPServer.new '127.0.0.1', 19999
 
   th = Thread.new do
     loop do
