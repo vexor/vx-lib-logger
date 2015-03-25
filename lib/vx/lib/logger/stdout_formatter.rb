@@ -6,16 +6,21 @@ module Vx ; module Lib ; module Logger
 
     def self.call(level, message, payload)
       if payload[:fields] && payload[:fields] != {}
-        payload = " " + ::Oj.dump(payload[:fields], mode: :compat)
+        payload_str = " " + ::Oj.dump(payload[:fields], mode: :compat)
       else
-        payload = ""
+        payload_str = ""
       end
 
       if level.length < 5
         level = "#{level} "
       end
 
-      "[#{level}] #{message}#{payload}\n"
+      if d = payload.delete(:duration)
+        d = "%.4f" % d
+        payload_str = "#{payload_str} (#{d}s)"
+      end
+
+      "[#{level}] #{message}#{payload_str}\n"
     end
 
   end
