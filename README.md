@@ -20,7 +20,17 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+Add to your 'application.rb' file:
+
+```ruby
+    Vx::Lib::Logger.progname = ENV['PROGNAME']
+    config.logger = Vx::Lib::Logger.get(ENV['STDOUT'] == '1' ? STDOUT : "log/#{Rails.env}.log")
+```
+
+Setup environment variables:
+
+* for Logstash: `LOGSTASH_HOST`
+* for Fluentd:  `FLUENT_HOST=hostname` and `FLUENT_PORT=24224`
 
 ## Contributing
 
