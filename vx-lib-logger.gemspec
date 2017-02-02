@@ -6,8 +6,8 @@ require 'vx/lib/logger/version'
 Gem::Specification.new do |spec|
   spec.name          = "vx-lib-logger"
   spec.version       = Vx::Lib::Logger::VERSION
-  spec.authors       = ["Dmitry Galinsky"]
-  spec.email         = ["dima.exe@gmail.com"]
+  spec.authors       = ["Dmitry Galinsky", "Alexander Kirillov"]
+  spec.email         = ["dima.exe@gmail.com", "alex@vexor.io"]
   spec.summary       = %q{ summary }
   spec.description   = %q{ description }
   spec.homepage      = ""
